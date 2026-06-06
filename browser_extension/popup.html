@@ -2,22 +2,64 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>DWEL</title>
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
-    <main>
-      <h1>DWEL</h1>
-      <label>
-        API URL
-        <input id="apiBaseUrl" placeholder="http://localhost:3000/api" />
-      </label>
-      <label>
-        Access Token
-        <textarea id="accessToken" placeholder="Paste JWT access token"></textarea>
-      </label>
-      <button id="save">Save</button>
-      <p id="status"></p>
+    <main class="shell">
+      <section class="hero">
+        <div class="brand">
+          <div class="logo">D</div>
+          <div>
+            <h1>DWEL</h1>
+            <p>Digital wellness collector</p>
+          </div>
+        </div>
+        <label class="switch">
+          <input id="trackingEnabled" type="checkbox" />
+          <span></span>
+        </label>
+      </section>
+
+      <section class="status-card">
+        <div>
+          <p class="eyebrow">Connection</p>
+          <strong id="connectionLabel">Not configured</strong>
+        </div>
+        <div id="statusDot" class="dot dot-muted" aria-hidden="true"></div>
+      </section>
+
+      <section class="grid">
+        <div class="metric">
+          <span id="eventCount">0</span>
+          <p>Events sent</p>
+        </div>
+        <div class="metric">
+          <span id="lastStatus">--</span>
+          <p>Last status</p>
+        </div>
+      </section>
+
+      <section class="form">
+        <label>
+          API URL
+          <input id="apiBaseUrl" spellcheck="false" placeholder="http://localhost:3000/api" />
+        </label>
+
+        <label>
+          Access Token
+          <textarea id="accessToken" spellcheck="false" placeholder="Paste JWT access token"></textarea>
+        </label>
+      </section>
+
+      <section class="actions">
+        <button id="save" class="primary">Save settings</button>
+        <button id="test" class="secondary">Test</button>
+      </section>
+
+      <button id="clearToken" class="link-button">Clear token</button>
+      <p id="status" role="status"></p>
     </main>
     <script src="popup.js"></script>
   </body>
