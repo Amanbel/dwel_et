@@ -1,11 +1,13 @@
-import { classifyContent } from "../classification/gemmaClassifier.service";
+import { classifyContent } from "../classification/geminiClassifier.service";
 import { calculateImpact } from "../impact/impactEngine.service";
 
 export const processContent = async (payload: any) => {
-  const classification = await classifyContent(
-    payload.title,
-    payload.description,
-  );
+  const content = `
+Title: ${payload.title}
+
+Description: ${payload.description}
+`;
+  const classification = await classifyContent(content);
 
   const impact = calculateImpact(classification);
 
