@@ -16,7 +16,7 @@ export const DashboardLayout: React.FC = () => {
   };
 
   return (
-    <div className="bg-background text-on-surface antialiased flex h-screen overflow-hidden w-full">
+    <div className="page-shell bg-background text-on-surface antialiased flex h-screen overflow-hidden w-full">
       {/* Sidebar Panel */}
       <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
 
@@ -26,11 +26,13 @@ export const DashboardLayout: React.FC = () => {
         <Header onMenuClick={toggleSidebar} />
 
         {/* Scrollable Main Content Frame */}
-        <main className="flex-1 overflow-y-auto p-margin-mobile md:p-margin-desktop bg-background flex flex-col">
-          <div className="max-w-[1280px] w-full mx-auto flex-1 flex flex-col space-y-gutter">
+        <main className="relative flex-1 overflow-y-auto p-margin-mobile md:p-margin-desktop bg-background flex flex-col">
+          <div className="relative z-[1] max-w-[1280px] w-full mx-auto flex-1 flex flex-col space-y-gutter">
             <Outlet />
           </div>
-          <Footer />
+          <div className="relative z-[1]">
+            <Footer />
+          </div>
         </main>
       </div>
     </div>

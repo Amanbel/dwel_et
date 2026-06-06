@@ -4,6 +4,10 @@ type Language = 'en' | 'am';
 
 export type TranslationKeys = 
   | 'dashboard'
+  | 'dashboardNoAnalytics'
+  | 'dashboardNoAnalyticsDesc'
+  | 'dashboardWaitingForData'
+  | 'dashboardWaitingForDataDesc'
   | 'analytics'
   | 'reports'
   | 'sessions'
@@ -78,6 +82,10 @@ export type TranslationKeys =
 const translations: Record<Language, Record<TranslationKeys, string>> = {
   en: {
     dashboard: 'Dashboard',
+    dashboardNoAnalytics: 'No analytics available',
+    dashboardNoAnalyticsDesc: 'There is no wellness data available to display yet. Once sessions or browsing activity are recorded, your dashboard overview and charts will appear here.',
+    dashboardWaitingForData: 'Waiting for data',
+    dashboardWaitingForDataDesc: 'The dashboard loaded successfully, but the database returned no overview data for the selected period.',
     analytics: 'Analytics',
     reports: 'Reports',
     sessions: 'Session Explorer',
@@ -244,6 +252,10 @@ const translations: Record<Language, Record<TranslationKeys, string>> = {
   },
   am: {
     dashboard: 'ዳሽቦርድ',
+    dashboardNoAnalytics: 'የትንታኔ መረጃ የለም',
+    dashboardNoAnalyticsDesc: 'ለማሳየት የሚችል የደህንነት መረጃ እስካሁን የለም። ክፍለ ጊዜዎች ወይም የአሰሳ እንቅስቃሴ ከተመዘገቡ በኋላ የዳሽቦርድ አጠቃላይ እይታዎ እና ግራፎች እዚህ ይታያሉ።',
+    dashboardWaitingForData: 'መረጃ በመጠበቅ ላይ',
+    dashboardWaitingForDataDesc: 'ዳሽቦርዱ በትክክል ተጫኗል፣ ነገር ግን ዳታቤዙ ለተመረጠው ጊዜ የአጠቃላይ እይታ መረጃ አልመለሰም።',
     analytics: 'ትንታኔ',
     reports: 'ሪፖርቶች',
     sessions: 'የአጠቃቀም መቃኛ',

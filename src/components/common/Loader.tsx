@@ -2,8 +2,11 @@ import React from 'react';
 
 export const Loader: React.FC<{ fullPage?: boolean }> = ({ fullPage = false }) => {
   const spinner = (
-    <div className="flex flex-col items-center justify-center space-y-md">
-      <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+    <div className="flex flex-col items-center justify-center space-y-md rounded-lg border border-outline-variant bg-surface-container-lowest px-xl py-lg shadow-sm">
+      <div className="relative w-12 h-12">
+        <div className="absolute inset-0 border-4 border-primary/15 rounded-full"></div>
+        <div className="absolute inset-0 border-4 border-transparent border-t-primary border-r-secondary rounded-full animate-spin"></div>
+      </div>
       <p className="font-label-md text-label-md text-on-surface-variant tracking-wider animate-pulse">
         Processing Lab Data...
       </p>

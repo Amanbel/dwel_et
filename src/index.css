@@ -6,34 +6,34 @@
 @tailwind utilities;
 
 :root {
-  --primary: #004ac6;
-  --primary-container: #2563eb;
+  --primary: #0f5da8;
+  --primary-container: #dcecff;
   --on-primary: #ffffff;
   --on-primary-container: #eeefff;
-  --secondary: #006a61;
-  --secondary-container: #86f2e4;
+  --secondary: #087a6c;
+  --secondary-container: #c9f2e7;
   --on-secondary: #ffffff;
   --on-secondary-container: #006f66;
-  --tertiary: #6a1edb;
-  --tertiary-container: #8343f4;
+  --tertiary: #8b3f7f;
+  --tertiary-container: #f3d9ef;
   --on-tertiary: #ffffff;
   --on-tertiary-container: #f7edff;
   --error: #ba1a1a;
   --error-container: #ffdad6;
   --on-error: #ffffff;
   --on-error-container: #93000a;
-  --surface: #faf8ff;
+  --surface: #f6f8fb;
   --surface-dim: #d9d9e5;
   --surface-bright: #faf8ff;
   --surface-container-lowest: #ffffff;
-  --surface-container-low: #f3f3fe;
-  --surface-container: #ededf9;
-  --surface-container-high: #e7e7f3;
-  --surface-container-highest: #e1e2ed;
-  --on-surface: #191b23;
-  --on-surface-variant: #434655;
-  --outline: #737686;
-  --outline-variant: #c3c6d7;
+  --surface-container-low: #eef4f8;
+  --surface-container: #e6edf3;
+  --surface-container-high: #dce6ed;
+  --surface-container-highest: #d2dde6;
+  --on-surface: #16202a;
+  --on-surface-variant: #526070;
+  --outline: #7b8494;
+  --outline-variant: #d3dae5;
   --inverse-surface: #2e3039;
   --inverse-on-surface: #f0f0fb;
   --inverse-primary: #b4c5ff;
@@ -76,6 +76,17 @@
 body {
   background-color: var(--surface);
   color: var(--on-surface);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--primary) 22%, transparent);
 }
 
 /* Smoothly transition all paint properties during theme switching */
@@ -109,14 +120,14 @@ body {
 
 /* Custom styles */
 .ambient-shadow {
-  box-shadow: 0 4px 12px rgba(0, 74, 198, 0.04);
+  box-shadow: 0 18px 50px rgba(19, 35, 53, 0.08);
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  box-shadow: 0 4px 6px -1px rgba(0, 74, 198, 0.05), 0 2px 4px -1px rgba(0, 74, 198, 0.03);
+  background: color-mix(in srgb, var(--surface-container-lowest) 78%, transparent);
+  backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid color-mix(in srgb, var(--outline-variant) 72%, transparent);
+  box-shadow: 0 18px 45px rgba(19, 35, 53, 0.08);
 }
 
 .dark .glass-card {
@@ -145,4 +156,82 @@ body {
 .lang-am,
 .lang-am *:not(.material-symbols-outlined) {
   font-family: 'Noto Sans Ethiopic', 'Geist', 'Inter', sans-serif !important;
+}
+
+.page-shell {
+  position: relative;
+}
+
+.page-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--primary-container) 18%, transparent), transparent 38%),
+    radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--secondary-container) 30%, transparent), transparent 27%),
+    radial-gradient(circle at 88% 8%, color-mix(in srgb, var(--tertiary-container) 24%, transparent), transparent 24%);
+  opacity: 0.75;
+}
+
+.page-hero {
+  border: 1px solid color-mix(in srgb, var(--outline-variant) 80%, transparent);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--surface-container-lowest) 92%, transparent), color-mix(in srgb, var(--surface-container-low) 88%, transparent)),
+    linear-gradient(135deg, color-mix(in srgb, var(--primary-container) 34%, transparent), transparent 44%);
+  box-shadow: 0 22px 60px rgba(19, 35, 53, 0.08);
+}
+
+.dark .page-hero {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--surface-container-lowest) 92%, transparent), color-mix(in srgb, var(--surface-container) 76%, transparent)),
+    linear-gradient(135deg, color-mix(in srgb, var(--primary-container) 20%, transparent), transparent 46%);
+}
+
+.metric-card {
+  min-height: 150px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-container-lowest) 95%, transparent), color-mix(in srgb, var(--surface-container-low) 82%, transparent));
+}
+
+.surface-panel {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-container-lowest) 96%, transparent), color-mix(in srgb, var(--surface-container-low) 86%, transparent));
+  border: 1px solid color-mix(in srgb, var(--outline-variant) 78%, transparent);
+  box-shadow: 0 16px 42px rgba(19, 35, 53, 0.07);
+}
+
+.landing-mesh {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-container-lowest) 92%, transparent), color-mix(in srgb, var(--surface) 96%, transparent)),
+    radial-gradient(circle at 15% 16%, color-mix(in srgb, var(--secondary-container) 42%, transparent), transparent 28%),
+    radial-gradient(circle at 82% 10%, color-mix(in srgb, var(--primary-container) 46%, transparent), transparent 26%),
+    radial-gradient(circle at 62% 82%, color-mix(in srgb, var(--tertiary-container) 30%, transparent), transparent 25%);
+}
+
+.soft-divider {
+  border-color: color-mix(in srgb, var(--outline-variant) 55%, transparent);
+}
+
+.focus-ring {
+  outline: none;
+}
+
+.focus-ring:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.35s ease-out both;
 }

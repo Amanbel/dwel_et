@@ -37,10 +37,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
   ];
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-surface-container-lowest border-r border-outline-variant shadow-sm p-md space-y-sm">
+    <div className="flex flex-col h-full bg-surface-container-lowest/88 backdrop-blur-xl border-r border-outline-variant/80 shadow-[12px_0_34px_rgba(19,35,53,0.06)] p-md space-y-sm">
       {/* Brand Header */}
       <div className="px-md py-lg flex items-center gap-sm">
-        <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary font-headline-md text-headline-md font-bold">
+        <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-on-primary font-headline-md text-headline-md font-bold shadow-[0_12px_28px_rgba(15,93,168,0.24)]">
           D
         </div>
         <div>
@@ -58,15 +58,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
               key={item.path}
               to={item.path}
               className={cn(
-                'flex items-center gap-sm px-md py-sm rounded-lg duration-200 transition-all hover:scale-[1.02]',
+                'group relative flex items-center gap-sm px-md py-sm rounded-lg duration-200 transition-all',
                 isActive
-                  ? 'text-primary dark:text-on-primary-container font-bold bg-primary-fixed dark:bg-primary-container animate-pulse-subtle'
-                  : 'text-on-surface-variant hover:bg-surface-container-high'
+                  ? 'text-primary dark:text-on-primary-container font-bold bg-primary-container/75 dark:bg-primary-container shadow-[0_10px_22px_rgba(19,35,53,0.08)]'
+                  : 'text-on-surface-variant hover:bg-surface-container-high/75 hover:text-on-surface'
               )}
               onClick={onClose}
             >
+              {isActive && <span className="absolute left-1 top-1/2 h-6 w-1 -translate-y-1/2 rounded-full bg-primary" />}
               <span
-                className={cn('material-symbols-outlined text-[20px]', isActive ? 'icon-fill' : '')}
+                className={cn('material-symbols-outlined text-[20px] transition-transform group-hover:scale-105', isActive ? 'icon-fill' : '')}
               >
                 {item.icon}
               </span>
@@ -80,7 +81,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
       <div className="pt-sm border-t border-outline-variant space-y-xs">
         <a
           href="#help"
-          className="flex items-center gap-sm px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-transform hover:scale-[1.02] duration-200"
+          className="flex items-center gap-sm px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high/75 hover:text-on-surface transition-colors duration-200"
         >
           <span className="material-symbols-outlined text-[20px]">help</span>
           <span className="font-label-md text-label-md">{t('help')}</span>
@@ -88,7 +89,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
         <a
           href="#logout"
           onClick={handleSignOut}
-          className="flex items-center gap-sm px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-transform hover:scale-[1.02] duration-200"
+          className="flex items-center gap-sm px-md py-sm rounded-lg text-on-surface-variant hover:bg-error-container/70 hover:text-on-error-container transition-colors duration-200"
         >
           <span className="material-symbols-outlined text-[20px]">logout</span>
           <span className="font-label-md text-label-md">{t('signout')}</span>
@@ -98,7 +99,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
         {user && (
           <Link
             to="/profile"
-            className="flex items-center mt-sm px-sm py-xs border-t border-outline-variant/30 pt-md hover:bg-surface-container-high rounded-lg cursor-pointer transition-all duration-150"
+            className="flex items-center mt-sm px-sm py-xs border-t border-outline-variant/30 pt-md hover:bg-surface-container-high/75 rounded-lg cursor-pointer transition-all duration-150"
           >
             <img
               alt={user.name}

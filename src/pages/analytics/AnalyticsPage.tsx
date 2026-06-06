@@ -33,28 +33,41 @@ export const AnalyticsPage: React.FC = () => {
   return (
     <div className="space-y-gutter">
       {/* Page Header */}
-      <div className="mb-lg">
-        <h2 className="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface dark:text-on-surface">
-          {t('exposureAnalytics')}
-        </h2>
-        <p className="font-body-lg text-body-lg text-on-surface-variant dark:text-on-surface-variant/80 mt-xs">
-          {t('exposureAnalyticsDesc')}
-        </p>
+      <div className="page-hero rounded-lg p-lg md:p-xl">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-md">
+          <div>
+            <span className="inline-flex items-center gap-xs rounded-lg bg-primary-container/70 px-sm py-xs text-primary font-label-sm text-label-sm mb-md">
+              <span className="material-symbols-outlined text-[16px]">query_stats</span>
+              Exposure intelligence
+            </span>
+            <h2 className="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface dark:text-on-surface">
+              {t('exposureAnalytics')}
+            </h2>
+            <p className="font-body-lg text-body-lg text-on-surface-variant dark:text-on-surface-variant/80 mt-xs max-w-3xl">
+              {t('exposureAnalyticsDesc')}
+            </p>
+          </div>
+          <div className="flex gap-sm">
+            <button
+              onClick={handleExportCSV}
+              className="inline-flex items-center gap-xs rounded-lg bg-surface-container-lowest border border-outline-variant px-md py-sm text-primary font-label-md text-label-md hover:bg-surface-container-low transition-colors"
+            >
+              <span className="material-symbols-outlined text-[18px]">download</span>
+              {t('exportCsv')}
+            </button>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
         {/* Category Breakdown Table (Full Width) */}
         <div className="lg:col-span-12">
           <Card accentColor="primary" className="p-lg dark:bg-surface-container-lowest dark:border-outline-variant">
-            <div className="flex justify-between items-center mb-md">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-sm mb-md">
               <h3 className="font-headline-md text-headline-md text-on-surface dark:text-on-surface">{t('contentExposureBreakdown')}</h3>
-              <button
-                onClick={handleExportCSV}
-                className="flex items-center space-x-xs text-primary dark:text-primary font-label-md text-label-md hover:bg-surface-container dark:hover:bg-surface-container py-xs px-sm rounded-lg transition-colors focus:outline-none"
-              >
-                <span className="material-symbols-outlined text-[18px]">download</span>
-                <span>{t('exportCsv')}</span>
-              </button>
+              <span className="rounded-lg bg-surface-container px-sm py-xs text-xs font-semibold text-on-surface-variant">
+                {categories.length} categories
+              </span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
@@ -68,7 +81,13 @@ export const AnalyticsPage: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="font-body-sm text-body-sm">
-                  {categories.map((cat, i) => (
+                  {categories.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="py-xl text-center text-on-surface-variant">
+                        No exposure data yet. Browse with the DWEL extension enabled to populate analytics.
+                      </td>
+                    </tr>
+                  ) : categories.map((cat, i) => (
                     <tr key={i} className="border-b border-surface-variant dark:border-surface-variant/30 hover:bg-surface dark:hover:bg-surface-container transition-colors">
                       <td className="py-sm px-sm font-medium text-on-surface dark:text-on-surface flex items-center">
                         <span
