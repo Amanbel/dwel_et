@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  passwordHash  String
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  refreshTokens RefreshToken[]
+  contentEvents ContentEvent[]
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+
+  userId    String
+  user      User @relation(fields: [userId], references: [id])
+  
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model ContentEvent {
+  id          String   @id @default(uuid())
+  app         String
+  title       String?
+  description String?
+
+  topics      Json
+  emotions    Json
+  
+  sentiment   String
+  riskLevel   String
+
+  wellbeingScore Int
+  
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User @relation(fields: [userId], references: [id])
+}
+
+model Report {
+  id             String   @id @default(uuid())
+
+  userId         String
+
+  type           String
+
+  wellbeingScore Float
+
+  summary        Json
+
+  recommendations Json
+
+  generatedAt    DateTime @default(now())
+}
