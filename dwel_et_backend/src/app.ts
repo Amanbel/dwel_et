@@ -9,17 +9,27 @@ import subscriptionsRoutes from "./routes/subscriptions.routes";
 import usersRoutes from "./routes/users.routes";
 import sessionsRoutes from "./routes/sessions.routes";
 import { initializeDatabase } from "./config/database";
+import cors from "cors";
 
 dotenv.config();
 const app = express();
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", process.env.CLIENT_ORIGIN || "http://localhost:5173");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
-  if (req.method === "OPTIONS") return res.sendStatus(204);
-  next();
-});
+app.use(cors());
+// app.use((req, res, next) => {
+//   res.header(
+//     "Access-Control-Allow-Origin",
+//     process.env.CLIENT_ORIGIN || "http://localhost:5173",
+//   );
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+//   );
+//   res.header(
+//     "Access-Control-Allow-Methods",
+//     "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+//   );
+//   if (req.method === "OPTIONS") return res.sendStatus(204);
+//   next();
+// });
 
 app.use(express.json({ limit: "1mb" }));
 
@@ -35,11 +45,18 @@ app.use("/api/subscriptions", subscriptionsRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/sessions", sessionsRoutes);
 
-app.use((error: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  res.status(error.status || 500).json({
-    message: error.message || "Internal server error",
-  });
-});
+app.use(
+  (
+    error: any,
+    _req: express.Request,
+    res: express.Response,
+    _next: express.NextFunction,
+  ) => {
+    res.status(error.status || 500).json({
+      message: error.message || "Internal server error",
+    });
+  },
+);
 
 const port = Number(process.env.PORT || 3000);
 
