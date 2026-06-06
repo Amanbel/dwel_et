@@ -1,0 +1,173 @@
+import React from 'react';
+import { useReports } from '../../hooks/useReports';
+import { Card } from '../../components/common/Card';
+import { Loader } from '../../components/common/Loader';
+import { ReportCard } from '../../components/reports/ReportCard';
+import { ReportSummary } from '../../components/reports/ReportSummary';
+import { RecommendationCard } from '../../components/reports/RecommendationCard';
+
+export const ReportsPage: React.FC = () => {
+  const { reports, selectedType, setSelectedType, activeReport, loadReportDetails, isLoading } = useReports();
+
+  return (
+    <div className="space-y-gutter">
+      {/* Page Header & Tabs */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-md">
+        <div>
+          <h2 className="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface">
+            Wellness Reports
+          </h2>
+          <p className="font-body-md text-body-md text-on-surface-variant mt-sm">
+            Comprehensive analysis of your digital habits.
+          </p>
+        </div>
+        
+        {/* Period Tabs */}
+        <div className="flex bg-surface-container-high rounded-lg p-xs">
+          {(['daily', 'weekly', 'monthly'] as const).map((type) => (
+            <button
+              key={type}
+              onClick={() => setSelectedType(type)}
+              className={`px-lg py-sm rounded-md font-label-md text-label-md transition-colors focus:outline-none capitalize ${
+                selectedType === type
+                  ? 'bg-surface-container-lowest text-primary font-bold shadow-sm'
+                  : 'text-on-surface-variant hover:bg-surface-variant'
+              }`}
+            >
+              {type}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+          {/* Reports List - Left Column */}
+          <div className="lg:col-span-4 space-y-md">
+            <h3 className="font-headline-md text-headline-md text-on-surface mb-xs px-xs">Historical Reports</h3>
+            {reports.length === 0 ? (
+              <p className="font-body-md text-body-md text-outline px-xs">No reports found for this interval.</p>
+            ) : (
+              reports.map((report) => (
+                <ReportCard
+                  key={report.id}
+                  report={report}
+                  isSelected={activeReport?.id === report.id}
+                  onClick={() => loadReportDetails(report.id)}
+                />
+              ))
+            )}
+          </div>
+
+          {/* Active Report Detail - Right Column */}
+          {activeReport ? (
+            <div className="lg:col-span-8 space-y-gutter">
+              {/* Executive Summary */}
+              <ReportSummary report={activeReport} />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+                {/* Focus vs Disruption Breakdown */}
+                <Card hoverable={false} className="flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-sm">
+                      <h4 className="font-label-md text-label-md text-on-surface font-bold">Focus vs Disruption</h4>
+                      <span className="material-symbols-outlined text-outline">pie_chart</span>
+                    </div>
+                    
+                    {/* Visual Bar Splits */}
+                    <div className="mt-md space-y-sm">
+                      <div>
+                        <div className="flex justify-between items-center text-sm mb-1">
+                          <span className="font-label-sm text-label-sm text-on-surface-variant">Focus</span>
+                          <span className="font-label-sm text-label-sm text-tertiary font-bold">
+                            {activeReport.focusPercentage}%
+                          </span>
+                        </div>
+                        <div className="w-full bg-surface-variant rounded-full h-2">
+                          <div
+                            className="bg-tertiary h-2 rounded-full"
+                            style={{ width: `${activeReport.focusPercentage}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <div className="flex justify-between items-center text-sm mb-1">
+                          <span className="font-label-sm text-label-sm text-on-surface-variant">Disruption</span>
+                          <span className="font-label-sm text-label-sm text-error font-bold">
+                            {activeReport.disruptionPercentage}%
+                          </span>
+                        </div>
+                        <div className="w-full bg-surface-variant rounded-full h-2">
+                          <div
+                            className="bg-error h-2 rounded-full"
+                            style={{ width: `${activeReport.disruptionPercentage}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Emotional Trends */}
+                <Card hoverable={false}>
+                  <div className="flex items-center gap-sm mb-lg border-b border-outline-variant pb-sm">
+                    <span className="material-symbols-outlined text-secondary">psychology</span>
+                    <h4 className="font-label-md text-label-md text-on-surface font-bold">Emotional Split</h4>
+                  </div>
+                  <div className="space-y-md">
+                    <div className="flex justify-between items-center p-sm bg-surface rounded-lg border border-outline-variant">
+                      <div className="flex items-center gap-sm">
+                        <div className="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+                          <span className="material-symbols-outlined text-[16px]">sentiment_satisfied</span>
+                        </div>
+                        <span className="font-body-md text-body-md text-on-surface">Calm & Focused</span>
+                      </div>
+                      <span className="font-label-md text-label-md text-secondary font-bold">
+                        {activeReport.calmPercentage}%
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between items-center p-sm bg-surface rounded-lg border border-outline-variant">
+                      <div className="flex items-center gap-sm">
+                        <div className="w-8 h-8 rounded-full bg-error-container flex items-center justify-center text-on-error-container">
+                          <span className="material-symbols-outlined text-[16px]">sentiment_dissatisfied</span>
+                        </div>
+                        <span className="font-body-md text-body-md text-on-surface">Stressed / Rushed</span>
+                      </div>
+                      <span className="font-label-md text-label-md text-error font-bold">
+                        {activeReport.stressPercentage}%
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between items-center p-sm bg-surface rounded-lg border border-outline-variant">
+                      <div className="flex items-center gap-sm">
+                        <div className="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant">
+                          <span className="material-symbols-outlined text-[16px]">sentiment_neutral</span>
+                        </div>
+                        <span className="font-body-md text-body-md text-on-surface">Neutral / Passive</span>
+                      </div>
+                      <span className="font-label-md text-label-md text-outline font-bold">
+                        {activeReport.neutralPercentage}%
+                      </span>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+
+              {/* Recommendations */}
+              <RecommendationCard recommendations={activeReport.recommendations} />
+            </div>
+          ) : (
+            <div className="lg:col-span-8 flex justify-center items-center h-48">
+              <p className="font-body-md text-body-md text-outline">Select a report to see details.</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+export default ReportsPage;
