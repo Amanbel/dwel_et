@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { formatDuration } from '../../utils/formatters';
+import { useLanguage } from '../../store/LanguageContext';
 
 interface AppUsageData {
   appName: string;
@@ -7,16 +7,17 @@ interface AppUsageData {
   color: string;
 }
 
-const defaultData: AppUsageData[] = [
-  { appName: 'TikTok', minutes: 165, color: '#6a1edb' },
-  { appName: 'YouTube', minutes: 90, color: '#ba1a1a' },
-  { appName: 'Instagram', minutes: 60, color: '#006a61' },
-  { appName: 'Facebook', minutes: 30, color: '#004ac6' },
-  { appName: 'X', minutes: 45, color: '#434655' },
-];
-
 export const AppUsageChart: React.FC = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const { t, language } = useLanguage();
+
+  const data: AppUsageData[] = [
+    { appName: t('tiktok'), minutes: 165, color: '#6a1edb' },
+    { appName: t('youtube'), minutes: 90, color: '#ba1a1a' },
+    { appName: t('instagram'), minutes: 60, color: '#006a61' },
+    { appName: t('facebook'), minutes: 30, color: '#004ac6' },
+    { appName: t('x'), minutes: 45, color: '#434655' },
+  ];
 
   const width = 600;
   const height = 200;
@@ -40,16 +41,16 @@ export const AppUsageChart: React.FC = () => {
             <g key={tick} className="opacity-10">
               <line x1={paddingLeft} y1={y} x2={width - paddingRight} y2={y} stroke="#737686" />
               <text x={paddingLeft - 10} y={y + 4} textAnchor="end" className="text-[10px] font-medium fill-on-surface">
-                {tick}m
+                {tick}{t('minutesMin')}
               </text>
             </g>
           );
         })}
 
         {/* Bars */}
-        {defaultData.map((d, index) => {
+        {data.map((d, index) => {
           const barWidth = 40;
-          const x = paddingLeft + (index / defaultData.length) * chartWidth + (chartWidth / defaultData.length - barWidth) / 2;
+          const x = paddingLeft + (index / data.length) * chartWidth + (chartWidth / data.length - barWidth) / 2;
           const barHeight = (d.minutes / maxVal) * chartHeight;
           const y = paddingTop + chartHeight - barHeight;
 
@@ -91,16 +92,18 @@ export const AppUsageChart: React.FC = () => {
                     width="70"
                     height="24"
                     rx="4"
-                    fill="#191b23"
+                    fill="var(--inverse-surface)"
                   />
                   <text
                     x={x + barWidth / 2}
                     y={y - 19}
                     textAnchor="middle"
-                    fill="#ffffff"
+                    fill="var(--inverse-on-surface)"
                     className="text-[10px] font-bold"
                   >
-                    {formatDuration(d.minutes)}
+                    {language === 'am' 
+                      ? `${Math.floor(d.minutes / 60)}ሰ ${d.minutes % 60}ደ`
+                      : `${Math.floor(d.minutes / 60)}h ${d.minutes % 60}m`}
                   </text>
                 </g>
               )}

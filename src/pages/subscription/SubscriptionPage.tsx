@@ -4,11 +4,13 @@ import { SubscriptionPlan } from '../../types/subscription';
 import { Card } from '../../components/common/Card';
 import { Loader } from '../../components/common/Loader';
 import { Button } from '../../components/common/Button';
+import { useLanguage } from '../../store/LanguageContext';
 
 export const SubscriptionPage: React.FC = () => {
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annually'>('monthly');
+  const { t, tText, language } = useLanguage();
 
   useEffect(() => {
     const loadPlans = async () => {
@@ -29,7 +31,7 @@ export const SubscriptionPage: React.FC = () => {
     try {
       const success = await subscriptionService.upgrade(planId);
       if (success) {
-        alert(`Successfully upgrading billing protocol!`);
+        alert(language === 'am' ? 'የክፍያ ፕሮቶኮል በተሳካ ሁኔታ ተሻሽሏል!' : `Successfully upgrading billing protocol!`);
       }
     } catch (error) {
       console.error(error);
@@ -44,32 +46,34 @@ export const SubscriptionPage: React.FC = () => {
     <div className="space-y-gutter">
       {/* Page Header */}
       <div className="text-center mb-2xl">
-        <h2 className="font-display-lg text-display-lg text-on-surface mb-sm">Choose Your Protocol</h2>
-        <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto leading-relaxed">
-          Select the data density and historical reach required for your digital wellness research. Upgrade or downgrade at any time.
+        <h2 className="font-display-lg text-display-lg text-on-surface dark:text-on-surface mb-sm">
+          {t('chooseProtocol')}
+        </h2>
+        <p className="font-body-lg text-body-lg text-on-surface-variant dark:text-on-surface-variant/80 max-w-2xl mx-auto leading-relaxed">
+          {t('subscriptionDesc')}
         </p>
         
         {/* Billing Toggle */}
-        <div className="mt-lg inline-flex items-center bg-surface-container p-1 rounded-full border border-outline-variant shadow-inner">
+        <div className="mt-lg inline-flex items-center bg-surface-container dark:bg-surface-container p-1 rounded-full border border-outline-variant dark:border-outline-variant shadow-inner">
           <button
             onClick={() => setBillingCycle('monthly')}
             className={`px-lg py-2 rounded-full font-label-md text-label-md transition-all duration-200 focus:outline-none ${
               billingCycle === 'monthly'
-                ? 'bg-surface-container-lowest text-on-surface shadow-sm font-semibold'
-                : 'text-on-surface-variant hover:text-on-surface'
+                ? 'bg-surface-container-lowest dark:bg-surface-container-lowest text-on-surface dark:text-on-surface shadow-sm font-semibold'
+                : 'text-on-surface-variant dark:text-on-surface-variant/80 hover:text-on-surface dark:hover:text-on-surface'
             }`}
           >
-            Monthly
+            {t('monthly')}
           </button>
           <button
             onClick={() => setBillingCycle('annually')}
             className={`px-lg py-2 rounded-full font-label-md text-label-md transition-all duration-200 focus:outline-none ${
               billingCycle === 'annually'
-                ? 'bg-surface-container-lowest text-on-surface shadow-sm font-semibold'
-                : 'text-on-surface-variant hover:text-on-surface'
+                ? 'bg-surface-container-lowest dark:bg-surface-container-lowest text-on-surface dark:text-on-surface shadow-sm font-semibold'
+                : 'text-on-surface-variant dark:text-on-surface-variant/80 hover:text-on-surface dark:hover:text-on-surface'
             }`}
           >
-            Annually <span className="text-primary ml-1 font-bold">-20%</span>
+            {t('annually')} <span className="text-primary dark:text-primary ml-1 font-bold">-20%</span>
           </button>
         </div>
       </div>
@@ -92,9 +96,9 @@ export const SubscriptionPage: React.FC = () => {
               key={plan.id}
               accentColor={isPro ? 'primary' : 'none'}
               hoverable={true}
-              className={`p-xl flex flex-col justify-between h-full relative ${
+              className={`p-xl flex flex-col justify-between h-full relative dark:bg-surface-container-lowest dark:border-outline-variant ${
                 isPro
-                  ? 'border-2 border-primary shadow-[0_8px_24px_rgba(0,74,198,0.08)] md:-translate-y-2'
+                  ? 'border-2 border-primary shadow-[0_8px_24px_rgba(0,74,198,0.08)] md:-translate-y-2 dark:border-primary dark:shadow-[0_8px_24px_rgba(0,0,0,0.3)]'
                   : 'shadow-[0_4px_12px_rgba(0,0,0,0.03)]'
               }`}
             >
@@ -102,59 +106,59 @@ export const SubscriptionPage: React.FC = () => {
               {isPro && (
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary text-on-primary font-label-sm text-label-sm px-3 py-1 rounded-full tracking-wide shadow-sm flex items-center gap-1 font-bold">
                   <span className="material-symbols-outlined text-[14px] icon-fill">star</span>
-                  Most Popular
+                  {t('mostPopular')}
                 </div>
               )}
 
               <div>
                 <div className="mb-lg">
-                  <h3 className={`font-headline-md text-headline-md mb-xs font-bold ${isPro ? 'text-primary' : 'text-on-surface'}`}>
-                    {plan.name}
+                  <h3 className={`font-headline-md text-headline-md mb-xs font-bold ${isPro ? 'text-primary dark:text-primary' : 'text-on-surface dark:text-on-surface'}`}>
+                    {tText(plan.name)}
                   </h3>
-                  <p className="font-body-sm text-body-sm text-on-surface-variant h-10 leading-relaxed">
-                    {plan.description}
+                  <p className="font-body-sm text-body-sm text-on-surface-variant dark:text-on-surface-variant/80 h-10 leading-relaxed">
+                    {tText(plan.description)}
                   </p>
                   <div className="mt-md flex items-baseline gap-1">
-                    <span className="font-display-lg text-display-lg text-on-surface font-bold">
+                    <span className="font-display-lg text-display-lg text-on-surface dark:text-on-surface font-bold">
                       {displayPrice}
                     </span>
-                    <span className="font-body-md text-body-md text-on-surface-variant">
-                      / {plan.period}
+                    <span className="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant/80">
+                      / {tText(plan.period)}
                     </span>
                   </div>
                 </div>
 
-                <div className="border-t border-outline-variant pt-md mb-lg">
-                  <p className="font-label-md text-label-md text-on-surface font-bold mb-md">
-                    {isPro ? 'Everything in Base, plus:' : 'Included in Base:'}
+                <div className="border-t border-outline-variant dark:border-outline-variant/30 pt-md mb-lg">
+                  <p className="font-label-md text-label-md text-on-surface dark:text-on-surface font-bold mb-md">
+                    {isPro ? t('everythingInBase') : t('includedInBase')}
                   </p>
                   <ul className="space-y-sm">
                     {plan.features.map((feature, fIdx) => (
                       <li key={fIdx} className="flex items-start gap-sm">
-                        <span className="material-symbols-outlined text-[20px] text-primary shrink-0 icon-fill">
+                        <span className="material-symbols-outlined text-[20px] text-primary dark:text-primary shrink-0 icon-fill">
                           check_circle
                         </span>
-                        <span className="font-body-md text-body-md text-on-surface leading-relaxed">
-                          {feature}
+                        <span className="font-body-md text-body-md text-on-surface dark:text-on-surface/90 leading-relaxed">
+                          {tText(feature)}
                         </span>
                       </li>
                     ))}
                     {!isPro && (
                       <>
                         <li className="flex items-start gap-sm opacity-50">
-                          <span className="material-symbols-outlined text-[20px] text-outline shrink-0">
+                          <span className="material-symbols-outlined text-[20px] text-outline dark:text-outline/80 shrink-0">
                             remove
                           </span>
-                          <span className="font-body-md text-body-md text-on-surface-variant">
-                            Advanced Trend Analytics
+                          <span className="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant/80">
+                            {t('advancedTrendAnalytics')}
                           </span>
                         </li>
                         <li className="flex items-start gap-sm opacity-50">
-                          <span className="material-symbols-outlined text-[20px] text-outline shrink-0">
+                          <span className="material-symbols-outlined text-[20px] text-outline dark:text-outline/80 shrink-0">
                             remove
                           </span>
-                          <span className="font-body-md text-body-md text-on-surface-variant">
-                            PDF Export Functionality
+                          <span className="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant/80">
+                            {t('pdfExportFunc')}
                           </span>
                         </li>
                       </>
@@ -169,7 +173,7 @@ export const SubscriptionPage: React.FC = () => {
                 disabled={!isPro}
                 className="w-full py-3"
               >
-                {plan.buttonText}
+                {tText(plan.buttonText)}
               </Button>
             </Card>
           );
@@ -178,10 +182,10 @@ export const SubscriptionPage: React.FC = () => {
 
       {/* Trust Badging */}
       <div className="mt-2xl text-center flex flex-col items-center justify-center space-y-sm">
-        <p className="font-body-sm text-body-sm text-on-surface-variant">
-          Secure payment processing. Cancel your protocol at any time.
+        <p className="font-body-sm text-body-sm text-on-surface-variant dark:text-on-surface-variant/80">
+          {t('securePayment')}
         </p>
-        <div className="flex gap-4 opacity-60 grayscale">
+        <div className="flex gap-4 opacity-60 grayscale dark:invert">
           <span className="material-symbols-outlined text-[32px]">credit_card</span>
           <span className="material-symbols-outlined text-[32px]">account_balance</span>
           <span className="material-symbols-outlined text-[32px]">lock</span>
@@ -190,4 +194,5 @@ export const SubscriptionPage: React.FC = () => {
     </div>
   );
 };
+
 export default SubscriptionPage;

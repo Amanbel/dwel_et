@@ -1,4 +1,13 @@
 /** @type {import('tailwindcss').Config} */
+const color = (varName) => {
+  return ({ opacityValue }) => {
+    if (opacityValue !== undefined) {
+      return `color-mix(in srgb, var(${varName}) ${opacityValue * 100}%, transparent)`;
+    }
+    return `var(${varName})`;
+  };
+};
+
 export default {
   content: [
     "./index.html",
@@ -8,53 +17,53 @@ export default {
   theme: {
     extend: {
       colors: {
-        "on-tertiary": "#ffffff",
-        "surface-container-low": "#f3f3fe",
-        "on-surface-variant": "#434655",
-        "primary": "#004ac6",
-        "error-container": "#ffdad6",
+        "on-tertiary": color("--on-tertiary"),
+        "surface-container-low": color("--surface-container-low"),
+        "on-surface-variant": color("--on-surface-variant"),
+        "primary": color("--primary"),
+        "error-container": color("--error-container"),
         "primary-fixed": "#dbe1ff",
         "tertiary-fixed-dim": "#d2bbff",
-        "surface": "#faf8ff",
-        "inverse-primary": "#b4c5ff",
-        "on-primary-container": "#eeefff",
-        "on-error": "#ffffff",
-        "inverse-surface": "#2e3039",
-        "secondary": "#006a61",
-        "surface-tint": "#0053db",
+        "surface": color("--surface"),
+        "inverse-primary": color("--inverse-primary"),
+        "on-primary-container": color("--on-primary-container"),
+        "on-error": color("--on-error"),
+        "inverse-surface": color("--inverse-surface"),
+        "secondary": color("--secondary"),
+        "surface-tint": color("--primary"),
         "on-primary-fixed": "#00174b",
-        "background": "#faf8ff",
+        "background": color("--surface"),
         "on-tertiary-fixed-variant": "#5a00c6",
-        "outline-variant": "#c3c6d7",
-        "error": "#ba1a1a",
-        "surface-container": "#ededf9",
-        "outline": "#737686",
-        "surface-container-lowest": "#ffffff",
+        "outline-variant": color("--outline-variant"),
+        "error": color("--error"),
+        "surface-container": color("--surface-container"),
+        "outline": color("--outline"),
+        "surface-container-lowest": color("--surface-container-lowest"),
         "primary-fixed-dim": "#b4c5ff",
-        "surface-container-high": "#e7e7f3",
-        "on-tertiary-container": "#f7edff",
+        "surface-container-high": color("--surface-container-high"),
+        "on-tertiary-container": color("--on-tertiary-container"),
         "tertiary-fixed": "#eaddff",
-        "on-surface": "#191b23",
+        "on-surface": color("--on-surface"),
         "on-primary-fixed-variant": "#003ea8",
-        "surface-bright": "#faf8ff",
-        "on-secondary": "#ffffff",
-        "on-primary": "#ffffff",
-        "surface-dim": "#d9d9e5",
+        "surface-bright": color("--surface-bright"),
+        "on-secondary": color("--on-secondary"),
+        "on-primary": color("--on-primary"),
+        "surface-dim": color("--surface-dim"),
         "on-secondary-fixed": "#00201d",
-        "on-error-container": "#93000a",
-        "primary-container": "#2563eb",
+        "on-error-container": color("--on-error-container"),
+        "primary-container": color("--primary-container"),
         "secondary-fixed": "#89f5e7",
-        "surface-variant": "#e1e2ed",
+        "surface-variant": color("--surface-container-highest"),
         "on-secondary-fixed-variant": "#005049",
-        "surface-container-highest": "#e1e2ed",
-        "on-secondary-container": "#006f66",
+        "surface-container-highest": color("--surface-container-highest"),
+        "on-secondary-container": color("--on-secondary-container"),
         "on-tertiary-fixed": "#25005a",
-        "tertiary": "#6a1edb",
-        "secondary-container": "#86f2e4",
-        "inverse-on-surface": "#f0f0fb",
-        "tertiary-container": "#8343f4",
+        "tertiary": color("--tertiary"),
+        "secondary-container": color("--secondary-container"),
+        "inverse-on-surface": color("--inverse-on-surface"),
+        "tertiary-container": color("--tertiary-container"),
         "secondary-fixed-dim": "#6bd8cb",
-        "on-background": "#191b23"
+        "on-background": color("--on-surface")
       },
       borderRadius: {
         "DEFAULT": "0.25rem",

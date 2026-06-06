@@ -3,6 +3,7 @@ import { Card } from '../../components/common/Card';
 import { Button } from '../../components/common/Button';
 import { agentService } from '../../services/agentService';
 import { Agent, Message } from '../../types/agent';
+import { useLanguage } from '../../store/LanguageContext';
 import { cn } from '../../utils/helpers';
 
 export const AgentChatPage: React.FC = () => {
@@ -11,39 +12,40 @@ export const AgentChatPage: React.FC = () => {
   const [messages, setMessages] = useState<Record<string, Message[]>>({});
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const { language, t } = useLanguage();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Load agents on mount
+  // Load agents on mount and when language changes
   useEffect(() => {
     const loadAgents = async () => {
-      const data = await agentService.getAgents();
+      const data = await agentService.getAgents(language);
       setAgents(data);
-      if (data.length > 0) {
+      if (selectedAgent) {
+        const updatedSelected = data.find(a => a.id === selectedAgent.id);
+        if (updatedSelected) setSelectedAgent(updatedSelected);
+      } else if (data.length > 0) {
         setSelectedAgent(data[0]);
       }
     };
     loadAgents();
-  }, []);
+  }, [language]);
 
-  // Initialize greeting message when switching agent
+  // Initialize greeting message when switching agent or changing language
   useEffect(() => {
     if (!selectedAgent) return;
     
-    const currentAgentMessages = messages[selectedAgent.id] || [];
-    if (currentAgentMessages.length === 0) {
-      const greetingMsg: Message = {
-        id: `msg_greet_${selectedAgent.id}`,
-        sender: 'agent',
-        text: selectedAgent.greeting,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      setMessages((prev) => ({
-        ...prev,
-        [selectedAgent.id]: [greetingMsg]
-      }));
-    }
-  }, [selectedAgent]);
+    const greetingMsg: Message = {
+      id: `msg_greet_${selectedAgent.id}_${language}`,
+      sender: 'agent',
+      text: selectedAgent.greeting,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    setMessages((prev) => ({
+      ...prev,
+      [selectedAgent.id]: [greetingMsg]
+    }));
+  }, [selectedAgent, language]);
 
   // Scroll to bottom on new messages
   useEffect(() => {
@@ -73,7 +75,7 @@ export const AgentChatPage: React.FC = () => {
     setIsTyping(true);
 
     try {
-      const replyText = await agentService.getReply(selectedAgent.id, text);
+      const replyText = await agentService.getReply(selectedAgent.id, text, language);
       const agentMsg: Message = {
         id: `msg_agt_${Date.now()}`,
         sender: 'agent',
@@ -96,8 +98,21 @@ export const AgentChatPage: React.FC = () => {
     handleSendMessage(prompt);
   };
 
-  // Preset chips depending on active agent
+  // Preset chips depending on active agent and language
   const getPromptChips = (agentId: string) => {
+    if (language === 'am') {
+      if (agentId === 'agt_focus') {
+        return ['የትኩረት መበታተንን እንዴት ልቀንስ?', 'የትኩረት ጊዜዬን ልጠብቅ?', 'የመተግበሪያዎች ተፅዕኖ?'];
+      }
+      if (agentId === 'agt_sleep') {
+        return ['ከመተኛቴ በፊት ስልክ አጠቃቀም?', 'የምሽት የዲጂታል እረፍት ልምድ?', 'የዕንቅልፍ ጥራቴን ለማሻሻል?'];
+      }
+      if (agentId === 'agt_psych') {
+        return ['ለአእምሮ ድካም ምን ላድርግ?', 'የ5 ደቂቃ አጫጭር እረፍቶች?', 'ዝምተኛ ማሸብለልን ለማመጣጠን?'];
+      }
+      return [];
+    }
+
     if (agentId === 'agt_focus') {
       return ['How can I reduce context switches?', 'Protect my focus window?', 'App impact feedback?'];
     }
@@ -115,10 +130,12 @@ export const AgentChatPage: React.FC = () => {
       {/* Page Header */}
       <div>
         <h2 className="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface">
-          AI Lab Assistant
+          {t('assistant')}
         </h2>
         <p className="font-body-sm text-body-sm text-on-surface-variant mt-sm">
-          Discuss your wellness patterns, digital logs, and cognitive fatigue with specialized AI agents.
+          {language === 'am'
+            ? 'ከአርቴፊሻል ኢንተለጀንስ የደህንነት ረዳቶች ጋር ስለ ልምዶችዎ፣ የአጠቃቀም ምዝግብ ማስታወሻዎችዎ እና አጠቃላይ የአእምሮ ዝለት ይወያዩ።'
+            : 'Discuss your wellness patterns, digital logs, and cognitive fatigue with specialized AI agents.'}
         </p>
       </div>
 
@@ -127,7 +144,7 @@ export const AgentChatPage: React.FC = () => {
         {/* Left Column: Agent Selector List */}
         <div className="lg:col-span-3 flex flex-col gap-md">
           <h3 className="font-label-md text-label-md font-bold uppercase tracking-wider text-outline px-xs">
-            Wellness Specialists
+            {t('specialists')}
           </h3>
           <div className="space-y-sm">
             {agents.map((agent) => {
@@ -174,7 +191,7 @@ export const AgentChatPage: React.FC = () => {
                   <h4 className="font-label-md text-label-md font-bold text-on-surface">
                     {selectedAgent.name}
                   </h4>
-                  <p className="text-[11px] text-secondary font-semibold">Active Specialist</p>
+                  <p className="text-[11px] text-secondary font-semibold">{t('activeSpecialist')}</p>
                 </div>
               </div>
             </div>
@@ -243,7 +260,7 @@ export const AgentChatPage: React.FC = () => {
                   <button
                     key={chip}
                     onClick={() => handlePromptChipClick(chip)}
-                    className="px-xs py-1 border border-outline text-[11px] font-semibold text-primary rounded-full hover:bg-primary-fixed hover:border-primary transition-all duration-150 focus:outline-none"
+                    className="px-2 py-1 border border-outline text-[10px] font-semibold text-primary rounded-full hover:bg-primary-fixed hover:border-primary transition-all duration-150 focus:outline-none"
                   >
                     {chip}
                   </button>
@@ -262,7 +279,11 @@ export const AgentChatPage: React.FC = () => {
                   type="text"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  placeholder={`Query ${selectedAgent.name}...`}
+                  placeholder={
+                    language === 'am'
+                      ? `${selectedAgent.name}ን ይጠይቁ...`
+                      : `Query ${selectedAgent.name}...`
+                  }
                   className="flex-1 bg-surface-container-lowest border border-outline-variant rounded-lg px-md py-sm font-body-sm text-body-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
                 />
                 <Button type="submit" disabled={!inputValue.trim()} size="sm">
@@ -284,7 +305,7 @@ export const AgentChatPage: React.FC = () => {
                   src={selectedAgent.avatar}
                 />
                 <div>
-                  <h4 className="font-headline-md text-[18px] text-on-surface font-bold leading-none">
+                  <h4 className="font-headline-md text-[18px] text-on-surface font-bold leading-none animate-fade-in">
                     {selectedAgent.name}
                   </h4>
                   <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">{selectedAgent.role}</p>
@@ -293,7 +314,7 @@ export const AgentChatPage: React.FC = () => {
 
               <div>
                 <h4 className="font-label-md text-label-md font-bold uppercase tracking-wider text-outline mb-xs">
-                  Expertise
+                  {t('expertise')}
                 </h4>
                 <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
                   {selectedAgent.expertise}
@@ -302,7 +323,7 @@ export const AgentChatPage: React.FC = () => {
 
               <div className="border-t border-outline-variant/30 pt-md">
                 <h4 className="font-label-md text-label-md font-bold uppercase tracking-wider text-outline mb-sm">
-                  Specialist Tips
+                  {t('tips')}
                 </h4>
                 <ul className="space-y-sm">
                   {selectedAgent.tips.map((tip, idx) => (
@@ -324,4 +345,5 @@ export const AgentChatPage: React.FC = () => {
     </div>
   );
 };
+
 export default AgentChatPage;

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLanguage } from '../../store/LanguageContext';
 
 interface PieSegment {
   name: string;
@@ -6,16 +7,17 @@ interface PieSegment {
   color: string;
 }
 
-const defaultData: PieSegment[] = [
-  { name: 'Education', percentage: 30, color: '#004ac6' },
-  { name: 'Entertainment', percentage: 25, color: '#006a61' },
-  { name: 'News', percentage: 20, color: '#6a1edb' },
-  { name: 'Passive Scrolling', percentage: 15, color: '#ba1a1a' },
-  { name: 'Other', percentage: 10, color: '#737686' },
-];
-
 export const CategoryPieChart: React.FC = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const { t } = useLanguage();
+
+  const data: PieSegment[] = [
+    { name: t('education'), percentage: 30, color: '#004ac6' },
+    { name: t('entertainment'), percentage: 25, color: '#006a61' },
+    { name: t('news'), percentage: 20, color: '#6a1edb' },
+    { name: t('passiveScrolling'), percentage: 15, color: '#ba1a1a' },
+    { name: t('other'), percentage: 10, color: '#737686' },
+  ];
 
   const size = 160;
   const radius = 50;
@@ -35,10 +37,10 @@ export const CategoryPieChart: React.FC = () => {
             cy={center}
             r={radius}
             fill="transparent"
-            stroke="#f3f3fe"
+            stroke="var(--surface-container-low)"
             strokeWidth={strokeWidth}
           />
-          {defaultData.map((d, index) => {
+          {data.map((d, index) => {
             const strokeLength = (d.percentage / 100) * circumference;
             const strokeOffset = circumference - (accumulatedPercentage / 100) * circumference;
             accumulatedPercentage += d.percentage;
@@ -62,18 +64,18 @@ export const CategoryPieChart: React.FC = () => {
           })}
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <span className="text-[12px] font-bold text-on-surface-variant">
-            {hoveredIndex !== null ? defaultData[hoveredIndex].name : 'Total'}
+          <span className="text-[12px] font-bold text-on-surface-variant text-center max-w-[80px] truncate">
+            {hoveredIndex !== null ? data[hoveredIndex].name : t('total')}
           </span>
           <span className="text-[20px] font-bold text-on-surface">
-            {hoveredIndex !== null ? `${defaultData[hoveredIndex].percentage}%` : '100%'}
+            {hoveredIndex !== null ? `${data[hoveredIndex].percentage}%` : '100%'}
           </span>
         </div>
       </div>
 
       {/* Legend */}
       <div className="space-y-xs w-full max-w-[200px] flex-shrink-0">
-        {defaultData.map((d, index) => (
+        {data.map((d, index) => (
           <div
             key={index}
             className={`flex justify-between items-center transition-all duration-150 py-1.5 px-sm rounded-md cursor-pointer ${

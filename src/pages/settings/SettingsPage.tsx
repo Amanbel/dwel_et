@@ -3,9 +3,11 @@ import { useAuth } from '../../hooks/useAuth';
 import { Card } from '../../components/common/Card';
 import { Input } from '../../components/common/Input';
 import { Button } from '../../components/common/Button';
+import { useLanguage } from '../../store/LanguageContext';
 
 export const SettingsPage: React.FC = () => {
   const { user } = useAuth();
+  const { t, language } = useLanguage();
   
   // Profile state
   const [name, setName] = useState(user?.name || '');
@@ -19,16 +21,19 @@ export const SettingsPage: React.FC = () => {
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Saving user profile modifications!');
+    alert(language === 'am' ? 'የምርምር መገለጫ ለውጦች ተቀምጠዋል!' : 'Saving user profile modifications!');
   };
 
   const handleExportData = (format: 'json' | 'csv') => {
-    alert(`Exporting research logs as ${format.toUpperCase()}...`);
+    alert(language === 'am' ? `${format.toUpperCase()} መዝገቦችን ወደ ውጭ በመላክ ላይ...` : `Exporting research logs as ${format.toUpperCase()}...`);
   };
 
   const handleDeleteData = () => {
-    if (window.confirm('Are you absolutely sure you want to delete all historical logs? This cannot be undone.')) {
-      alert('Deleting lab logs databases...');
+    const confirmMsg = language === 'am' 
+      ? 'ሁሉንም ያለፉ መዝገቦችን ማጥፋት እንደሚፈልጉ እርግጠኛ ነዎት? ይህ ድርጊት ሊቀለበስ አይችልም።' 
+      : 'Are you absolutely sure you want to delete all historical logs? This cannot be undone.';
+    if (window.confirm(confirmMsg)) {
+      alert(language === 'am' ? 'የላብራቶሪ መዝገቦች ውሂብ ጎታዎች በመሰረዝ ላይ...' : 'Deleting lab logs databases...');
     }
   };
 
@@ -36,30 +41,30 @@ export const SettingsPage: React.FC = () => {
     <div className="space-y-gutter">
       {/* Page Header */}
       <div>
-        <h2 className="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface">
-          Settings
+        <h2 className="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface dark:text-on-surface">
+          {t('settings')}
         </h2>
-        <p className="font-body-lg text-body-lg text-on-surface-variant mt-xs">
-          Manage your research profile, local privacy settings, and log data.
+        <p className="font-body-lg text-body-lg text-on-surface-variant dark:text-on-surface-variant/80 mt-xs">
+          {t('settingsDesc')}
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
         {/* Profile Card */}
         <div className="lg:col-span-6">
-          <Card hoverable={false} accentColor="primary" className="h-full flex flex-col justify-between">
+          <Card hoverable={false} accentColor="primary" className="h-full flex flex-col justify-between dark:bg-surface-container-lowest dark:border-outline-variant">
             <form onSubmit={handleSaveProfile} className="space-y-md">
-              <h3 className="font-headline-md text-headline-md text-on-surface mb-md">Researcher Profile</h3>
+              <h3 className="font-headline-md text-headline-md text-on-surface dark:text-on-surface mb-md">{t('researcherProfile')}</h3>
               
               <Input
-                label="Full Name"
+                label={t('fullName')}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 icon="person"
               />
 
               <Input
-                label="Email address"
+                label={t('emailAddress')}
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -67,14 +72,14 @@ export const SettingsPage: React.FC = () => {
               />
 
               <Input
-                label="Lab Role / Position"
+                label={t('labRole')}
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
                 icon="work"
               />
 
               <div className="pt-md">
-                <Button type="submit">Save Changes</Button>
+                <Button type="submit">{t('saveChanges')}</Button>
               </div>
             </form>
           </Card>
@@ -82,56 +87,56 @@ export const SettingsPage: React.FC = () => {
 
         {/* Privacy & Processing Card */}
         <div className="lg:col-span-6">
-          <Card hoverable={false} accentColor="secondary" className="h-full flex flex-col justify-between">
+          <Card hoverable={false} accentColor="secondary" className="h-full flex flex-col justify-between dark:bg-surface-container-lowest dark:border-outline-variant">
             <div className="space-y-md">
-              <h3 className="font-headline-md text-headline-md text-on-surface mb-md">Privacy & AI Settings</h3>
+              <h3 className="font-headline-md text-headline-md text-on-surface dark:text-on-surface mb-md">{t('privacySettings')}</h3>
 
               <div className="space-y-lg pt-sm">
                 {/* Toggle 1 */}
                 <div className="flex items-start justify-between">
                   <div className="mr-md">
-                    <p className="font-label-md text-label-md text-on-surface font-bold">Local Processing Only</p>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant mt-xs leading-relaxed">
-                      Analyze all text and content metrics locally in-browser. Zero remote servers are contacted.
+                    <p className="font-label-md text-label-md text-on-surface dark:text-on-surface font-bold">{t('localProcessing')}</p>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant dark:text-on-surface-variant/80 mt-xs leading-relaxed">
+                      {t('localProcessingDesc')}
                     </p>
                   </div>
                   <input
                     type="checkbox"
                     checked={localProcessing}
                     onChange={(e) => setLocalProcessing(e.target.checked)}
-                    className="h-5 w-10 text-primary border-outline-variant rounded bg-surface-container-lowest cursor-pointer shrink-0"
+                    className="h-5 w-10 text-primary border-outline-variant dark:border-outline-variant/30 rounded bg-surface-container-lowest dark:bg-surface-container-low cursor-pointer shrink-0"
                   />
                 </div>
 
                 {/* Toggle 2 */}
                 <div className="flex items-start justify-between">
                   <div className="mr-md">
-                    <p className="font-label-md text-label-md text-on-surface font-bold">Allow Semantic Summarization</p>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant mt-xs leading-relaxed">
-                      Use local NLP transformers to extract themes and topic clouds from browser sessions.
+                    <p className="font-label-md text-label-md text-on-surface dark:text-on-surface font-bold">{t('allowSemantic')}</p>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant dark:text-on-surface-variant/80 mt-xs leading-relaxed">
+                      {t('allowSemanticDesc')}
                     </p>
                   </div>
                   <input
                     type="checkbox"
                     checked={semanticSummaries}
                     onChange={(e) => setSemanticSummaries(e.target.checked)}
-                    className="h-5 w-10 text-primary border-outline-variant rounded bg-surface-container-lowest cursor-pointer shrink-0"
+                    className="h-5 w-10 text-primary border-outline-variant dark:border-outline-variant/30 rounded bg-surface-container-lowest dark:bg-surface-container-low cursor-pointer shrink-0"
                   />
                 </div>
 
                 {/* Toggle 3 */}
                 <div className="flex items-start justify-between">
                   <div className="mr-md">
-                    <p className="font-label-md text-label-md text-on-surface font-bold">Continuous Context Logging</p>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant mt-xs leading-relaxed">
-                      Automatically capture contextual screenshots for active sessions to estimate physiological fatigue (Low/Medium/High).
+                    <p className="font-label-md text-label-md text-on-surface dark:text-on-surface font-bold">{t('continuousLogging')}</p>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant dark:text-on-surface-variant/80 mt-xs leading-relaxed">
+                      {t('continuousLoggingDesc')}
                     </p>
                   </div>
                   <input
                     type="checkbox"
                     checked={contextDetection}
                     onChange={(e) => setContextDetection(e.target.checked)}
-                    className="h-5 w-10 text-primary border-outline-variant rounded bg-surface-container-lowest cursor-pointer shrink-0"
+                    className="h-5 w-10 text-primary border-outline-variant dark:border-outline-variant/30 rounded bg-surface-container-lowest dark:bg-surface-container-low cursor-pointer shrink-0"
                   />
                 </div>
               </div>
@@ -141,24 +146,24 @@ export const SettingsPage: React.FC = () => {
 
         {/* Data Export & Danger Zone */}
         <div className="lg:col-span-12">
-          <Card hoverable={false} className="p-lg">
-            <h3 className="font-headline-md text-headline-md text-on-surface mb-md">Data Portability</h3>
-            <p className="font-body-sm text-body-sm text-on-surface-variant mb-lg max-w-2xl leading-relaxed">
-              Export your historical research data at any time. Or purge your local database logs permanently.
+          <Card hoverable={false} className="p-lg dark:bg-surface-container-lowest dark:border-outline-variant">
+            <h3 className="font-headline-md text-headline-md text-on-surface dark:text-on-surface mb-md">{t('dataPortability')}</h3>
+            <p className="font-body-sm text-body-sm text-on-surface-variant dark:text-on-surface-variant/80 mb-lg max-w-2xl leading-relaxed">
+              {t('dataPortabilityDesc')}
             </p>
 
             <div className="flex flex-wrap gap-md">
               <Button variant="secondary" onClick={() => handleExportData('csv')} className="flex items-center gap-sm">
                 <span className="material-symbols-outlined text-[18px]">download</span>
-                Export CSV Logs
+                {t('exportCsvLogs')}
               </Button>
               <Button variant="secondary" onClick={() => handleExportData('json')} className="flex items-center gap-sm">
                 <span className="material-symbols-outlined text-[18px]">download</span>
-                Export JSON Logs
+                {t('exportJsonLogs')}
               </Button>
               <Button variant="danger" onClick={handleDeleteData} className="flex items-center gap-sm md:ml-auto">
                 <span className="material-symbols-outlined text-[18px]">delete_forever</span>
-                Purge All Lab Logs
+                {t('purgeLogs')}
               </Button>
             </div>
           </Card>
@@ -167,4 +172,5 @@ export const SettingsPage: React.FC = () => {
     </div>
   );
 };
+
 export default SettingsPage;

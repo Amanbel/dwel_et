@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
+import { useLanguage } from '../../store/LanguageContext';
 
 interface ChartData {
   label: string;
   value: number;
 }
 
-const defaultData: ChartData[] = [
-  { label: 'Mon', value: 70 },
-  { label: 'Tue', value: 75 },
-  { label: 'Wed', value: 80 },
-  { label: 'Thu', value: 65 },
-  { label: 'Fri', value: 78 },
-  { label: 'Sat', value: 85 },
-  { label: 'Sun', value: 82 },
-];
-
 export const WellnessTrendChart: React.FC = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const { t } = useLanguage();
+
+  const data: ChartData[] = [
+    { label: t('mon'), value: 70 },
+    { label: t('tue'), value: 75 },
+    { label: t('wed'), value: 80 },
+    { label: t('thu'), value: 65 },
+    { label: t('fri'), value: 78 },
+    { label: t('sat'), value: 85 },
+    { label: t('sun'), value: 82 },
+  ];
 
   const width = 600;
   const height = 250;
@@ -31,8 +33,8 @@ export const WellnessTrendChart: React.FC = () => {
   const maxVal = 100;
   const minVal = 0;
 
-  const points = defaultData.map((d, index) => {
-    const x = paddingLeft + (index / (defaultData.length - 1)) * chartWidth;
+  const points = data.map((d, index) => {
+    const x = paddingLeft + (index / (data.length - 1)) * chartWidth;
     const y = paddingTop + chartHeight - ((d.value - minVal) / (maxVal - minVal)) * chartHeight;
     return { x, y, label: d.label, value: d.value };
   });
@@ -45,8 +47,8 @@ export const WellnessTrendChart: React.FC = () => {
       <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto">
         <defs>
           <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#004ac6" stopOpacity="0.25" />
-            <stop offset="100%" stopColor="#004ac6" stopOpacity="0.0" />
+            <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.25" />
+            <stop offset="100%" stopColor="var(--primary)" stopOpacity="0.0" />
           </linearGradient>
         </defs>
 
@@ -67,7 +69,7 @@ export const WellnessTrendChart: React.FC = () => {
         <path d={areaPath} fill="url(#areaGradient)" />
 
         {/* Trend Line */}
-        <path d={linePath} fill="none" stroke="#004ac6" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+        <path d={linePath} fill="none" stroke="var(--primary)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
 
         {/* X Axis labels */}
         {points.map((p, i) => (
@@ -89,8 +91,8 @@ export const WellnessTrendChart: React.FC = () => {
               cx={p.x}
               cy={p.y}
               r={hoveredIndex === i ? 6 : 4}
-              fill="#ffffff"
-              stroke="#004ac6"
+              fill="var(--inverse-on-surface)"
+              stroke="var(--primary)"
               strokeWidth="3"
               className="cursor-pointer transition-all duration-150"
               onMouseEnter={() => setHoveredIndex(i)}
@@ -104,10 +106,10 @@ export const WellnessTrendChart: React.FC = () => {
                   width="50"
                   height="22"
                   rx="4"
-                  fill="#191b23"
+                  fill="var(--inverse-surface)"
                   className="shadow-sm"
                 />
-                <text x={p.x} y={p.y - 20} textAnchor="middle" fill="#ffffff" className="text-[10px] font-bold">
+                <text x={p.x} y={p.y - 20} textAnchor="middle" fill="var(--inverse-on-surface)" className="text-[10px] font-bold">
                   {p.value}
                 </text>
               </g>

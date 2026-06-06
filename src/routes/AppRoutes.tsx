@@ -17,6 +17,7 @@ import RecommendationsPage from '../pages/recommendations/RecommendationsPage';
 import SubscriptionPage from '../pages/subscription/SubscriptionPage';
 import SettingsPage from '../pages/settings/SettingsPage';
 import AgentChatPage from '../pages/agent/AgentChatPage';
+import ProfilePage from '../pages/profile/ProfilePage';
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -40,6 +41,7 @@ export const AppRoutes: React.FC = () => {
           <Route path="/sessions" element={<SessionExplorerPage />} />
           <Route path="/recommendations" element={<RecommendationsPage />} />
           <Route path="/agent" element={<AgentChatPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/subscription" element={<SubscriptionPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           {/* Catch-all inner route */}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { useLanguage } from '../../store/LanguageContext';
 import { cn } from '../../utils/helpers';
 
 interface SidebarProps {
@@ -10,6 +11,7 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
   const { user, logout } = useAuth();
+  const { t, language } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -24,14 +26,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
   };
 
   const navItems = [
-    { name: 'Dashboard', path: '/dashboard', icon: 'dashboard' },
-    { name: 'Analytics', path: '/analytics', icon: 'insights' },
-    { name: 'Reports', path: '/reports', icon: 'description' },
-    { name: 'Session Explorer', path: '/sessions', icon: 'history_edu' },
-    { name: 'Recommendations', path: '/recommendations', icon: 'auto_awesome' },
-    { name: 'AI Lab Assistant', path: '/agent', icon: 'smart_toy' },
-    { name: 'Subscription', path: '/subscription', icon: 'card_membership' },
-    { name: 'Settings', path: '/settings', icon: 'settings' },
+    { name: t('dashboard'), path: '/dashboard', icon: 'dashboard' },
+    { name: t('analytics'), path: '/analytics', icon: 'insights' },
+    { name: t('reports'), path: '/reports', icon: 'description' },
+    { name: t('sessions'), path: '/sessions', icon: 'history_edu' },
+    { name: t('recommendations'), path: '/recommendations', icon: 'auto_awesome' },
+    { name: t('assistant'), path: '/agent', icon: 'smart_toy' },
+    { name: t('subscription'), path: '/subscription', icon: 'card_membership' },
+    { name: t('settings'), path: '/settings', icon: 'settings' },
   ];
 
   const sidebarContent = (
@@ -42,8 +44,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
           D
         </div>
         <div>
-          <h1 className="font-headline-md text-headline-md text-primary font-bold leading-none">dwell et</h1>
-          <p className="font-label-sm text-label-sm text-on-surface-variant">Digital Wellness</p>
+          <h1 className="font-headline-md text-headline-md text-primary font-bold leading-none">{language === 'am' ? 'ድዌል እት' : 'dwell et'}</h1>
+          <p className="font-label-sm text-label-sm text-on-surface-variant">{t('wellnessOverview')}</p>
         </div>
       </div>
 
@@ -53,15 +55,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
           const isActive = location.pathname.startsWith(item.path);
           return (
             <Link
-              key={item.name}
+              key={item.path}
               to={item.path}
-              onClick={onClose}
               className={cn(
                 'flex items-center gap-sm px-md py-sm rounded-lg duration-200 transition-all hover:scale-[1.02]',
                 isActive
-                  ? 'text-primary font-bold bg-primary-fixed'
+                  ? 'text-primary dark:text-on-primary-container font-bold bg-primary-fixed dark:bg-primary-container animate-pulse-subtle'
                   : 'text-on-surface-variant hover:bg-surface-container-high'
               )}
+              onClick={onClose}
             >
               <span
                 className={cn('material-symbols-outlined text-[20px]', isActive ? 'icon-fill' : '')}
@@ -81,7 +83,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
           className="flex items-center gap-sm px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-transform hover:scale-[1.02] duration-200"
         >
           <span className="material-symbols-outlined text-[20px]">help</span>
-          <span className="font-label-md text-label-md">Help</span>
+          <span className="font-label-md text-label-md">{t('help')}</span>
         </a>
         <a
           href="#logout"
@@ -89,24 +91,27 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
           className="flex items-center gap-sm px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-transform hover:scale-[1.02] duration-200"
         >
           <span className="material-symbols-outlined text-[20px]">logout</span>
-          <span className="font-label-md text-label-md">Sign Out</span>
+          <span className="font-label-md text-label-md">{t('signout')}</span>
         </a>
 
         {/* User profile bottom item */}
         {user && (
-          <div className="flex items-center mt-sm px-sm py-xs border-t border-outline-variant/30 pt-md">
+          <Link
+            to="/profile"
+            className="flex items-center mt-sm px-sm py-xs border-t border-outline-variant/30 pt-md hover:bg-surface-container-high rounded-lg cursor-pointer transition-all duration-150"
+          >
             <img
               alt={user.name}
-              className="w-8 h-8 rounded-full border border-outline-variant object-cover"
+              className="w-8 h-8 rounded-full border border-outline-variant object-cover shrink-0"
               src={user.avatarUrl}
             />
             <div className="ml-sm overflow-hidden">
               <p className="font-label-sm text-label-sm font-bold text-on-surface truncate">
                 {user.name}
               </p>
-              <p className="text-[10px] text-outline truncate">{user.role}</p>
+              <p className="text-[10px] text-outline truncate">{t('profile')}</p>
             </div>
-          </div>
+          </Link>
         )}
       </div>
     </div>
@@ -139,3 +144,5 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
     </>
   );
 };
+
+export default Sidebar;
