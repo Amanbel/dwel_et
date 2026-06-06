@@ -1,11 +1,12 @@
 import {
   createUser,
   findUserByEmail,
+  publicUser,
 } from "../../repositories/user.repository";
 
 import { hashPassword, comparePassword } from "./password.service";
 
-import { createAccessToken, createRefreshToken } from "./jwt.service";
+import { createAccessToken, createRefreshToken, verifyRefreshToken } from "./jwt.service";
 
 export const registerUser = async (
   name: string,
@@ -24,7 +25,7 @@ export const registerUser = async (
     passwordHash,
   });
 
-  return user;
+  return publicUser(user);
 };
 
 export const loginUser = async (email: string, password: string) => {
@@ -41,6 +42,14 @@ export const loginUser = async (email: string, password: string) => {
 
     refreshToken: createRefreshToken(user.id),
 
-    user,
+    user: publicUser(user),
+  };
+};
+
+export const refreshUserSession = async (refreshToken: string) => {
+  const decoded = verifyRefreshToken(refreshToken) as any;
+  return {
+    accessToken: createAccessToken(decoded.userId),
+    refreshToken: createRefreshToken(decoded.userId),
   };
 };

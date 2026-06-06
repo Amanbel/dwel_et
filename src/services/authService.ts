@@ -1,45 +1,36 @@
 import { User } from '../types/user';
-import { delay } from './api';
-
-const STORAGE_KEY = 'dwel_user';
-
-const MOCK_USER: User = {
-  id: 'usr_123',
-  name: 'Dr. A. Researcher',
-  email: 'researcher@dwel.lab',
-  avatarUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAt2eN1IxWZfFjKQiYY1LA8pJsntzUjrd0LqZMWILzfX4-xJo7RkI8Y-syX6bI3NZfnhXRu5ak99I_2Kps8g5JjBhCJcQfrkuGRO8UX4cqmANP40HJYRws9-SlWDEmaK0_RVzAwkY3AybMLyqpMsBxqwJdsyQXjWDuNk4TP_lkbxZmjvxvR_me5J5SZo8tyIKa90HmSHz_MgDuavaaa5VOStwD0hRzdC5clW1aJUnJidIMY9ob_A3v52S8DebAZROca-yQimXuZOzjb',
-  role: 'Senior Digital Wellness Specialist'
-};
+import { api, clearSession, setSession, USER_KEY } from './api';
 
 export const authService = {
   getCurrentUser: async (): Promise<User | null> => {
-    await delay(200);
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : null;
+    const stored = localStorage.getItem(USER_KEY);
+    if (!stored) return null;
+
+    try {
+      const { data } = await api.get<User>('/users/me');
+      localStorage.setItem(USER_KEY, JSON.stringify(data));
+      return data;
+    } catch {
+      return JSON.parse(stored);
+    }
   },
 
-  login: async (email: string, _: string): Promise<User> => {
-    await delay(500);
-    const user = { ...MOCK_USER, email, name: email.split('@')[0] };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
-    return user;
+  login: async (email: string, password: string): Promise<User> => {
+    const { data } = await api.post('/auth/login', { email, password });
+    setSession(data);
+    return data.user;
   },
 
-  register: async (name: string, email: string, _: string): Promise<User> => {
-    await delay(500);
-    const user: User = {
-      id: `usr_${Math.random().toString(36).substr(2, 9)}`,
-      name,
-      email,
-      avatarUrl: MOCK_USER.avatarUrl,
-      role: 'Standard Lab User'
-    };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
-    return user;
+  register: async (name: string, email: string, password: string): Promise<User> => {
+    await api.post('/auth/register', { name, email, password });
+    return authService.login(email, password);
   },
 
   logout: async (): Promise<void> => {
-    await delay(200);
-    localStorage.removeItem(STORAGE_KEY);
+    try {
+      await api.post('/auth/logout');
+    } finally {
+      clearSession();
+    }
   }
 };

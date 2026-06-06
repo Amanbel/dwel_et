@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
 
-const ACCESS_SECRET = process.env.ACCESS_SECRET!;
+const ACCESS_SECRET = process.env.ACCESS_SECRET || "dwel-dev-access-secret";
 
-const REFRESH_SECRET = process.env.REFRESH_SECRET!;
+const REFRESH_SECRET = process.env.REFRESH_SECRET || "dwel-dev-refresh-secret";
 
 export const createAccessToken = (userId: string) => {
   return jwt.sign({ userId }, ACCESS_SECRET, { expiresIn: "15m" });

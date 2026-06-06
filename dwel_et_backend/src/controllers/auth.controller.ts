@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { registerUser, loginUser } from "../services/auth/auth.service";
+import { registerUser, loginUser, refreshUserSession } from "../services/auth/auth.service";
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -31,9 +31,13 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const refresh = async (req: Request, res: Response) => {
-  res.json({
-    message: "todo",
-  });
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) return res.status(400).json({ message: "refreshToken is required" });
+    res.json(await refreshUserSession(refreshToken));
+  } catch {
+    res.status(401).json({ message: "Invalid refresh token" });
+  }
 };
 
 export const logout = async (req: Request, res: Response) => {

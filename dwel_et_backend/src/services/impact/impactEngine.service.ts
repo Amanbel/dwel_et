@@ -26,7 +26,13 @@ export const calculateImpact = (classification: any) => {
     score += emotionWeights[emotion] || 0;
   });
 
+  const sentiment = classification.sentiment;
+  if (sentiment === "positive") score += 8;
+  if (sentiment === "negative") score -= 8;
+  if (classification.riskLevel === "high") score -= 15;
+  if (classification.riskLevel === "medium") score -= 6;
+
   return {
-    wellbeingScore: score,
+    wellbeingScore: Math.max(0, Math.min(100, 50 + score)),
   };
 };

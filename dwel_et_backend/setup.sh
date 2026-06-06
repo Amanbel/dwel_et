@@ -8,7 +8,6 @@
 echo "Creating project structure..."
 
 # Root folders
-mkdir -p prisma/migrations
 mkdir -p tests
 
 # Src folders
@@ -127,9 +126,6 @@ touch src/utils/date.ts
 
 # Main app
 touch src/app.ts
-
-# Prisma
-touch prisma/schema.prisma
 
 # Root files
 touch package.json
