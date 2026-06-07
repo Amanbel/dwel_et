@@ -106,7 +106,11 @@ export const SettingsPage: React.FC = () => {
                 icon="work"
                 disabled
                 style={{
-                  overflow: "auto",
+                  // overflow: "auto",
+                  display: "block",
+                  overflowX: "auto",
+                  overflowY: "hidden",
+                  whiteSpace: "nowrap",
                 }}
               />
 
