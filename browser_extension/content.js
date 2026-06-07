@@ -58,12 +58,17 @@ const getReadableBodyText = () => {
     .map((node) => node.innerText || node.textContent || "")
     .join(" ");
 
-  return cleanText(text || document.body?.innerText || "").slice(0, MAX_TEXT_CHARS);
+  return cleanText(text || document.body?.innerText || "").slice(
+    0,
+    MAX_TEXT_CHARS,
+  );
 };
 
 const buildPayload = () => {
   const title = cleanText(document.title || getMeta("og:title"));
-  const description = cleanText(getMeta("description") || getMeta("og:description"));
+  const description = cleanText(
+    getMeta("description") || getMeta("og:description"),
+  );
   const textContext = getReadableBodyText();
   const combinedText = `${title} ${description} ${textContext}`;
 
@@ -78,7 +83,13 @@ const buildPayload = () => {
 };
 
 const payloadSignature = (payload) =>
-  [payload.platform, payload.url, payload.title, payload.description, payload.duration].join("|");
+  [
+    payload.platform,
+    payload.url,
+    payload.title,
+    payload.description,
+    payload.duration,
+  ].join("|");
 
 const tickActiveTime = () => {
   const now = Date.now();

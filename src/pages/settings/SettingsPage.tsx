@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
-import { useAuth } from '../../hooks/useAuth';
-import { Card } from '../../components/common/Card';
-import { Input } from '../../components/common/Input';
-import { Button } from '../../components/common/Button';
-import { useLanguage } from '../../store/LanguageContext';
+import React, { useState } from "react";
+import { useAuth } from "../../hooks/useAuth";
+import { Card } from "../../components/common/Card";
+import { Input } from "../../components/common/Input";
+import { Button } from "../../components/common/Button";
+import { useLanguage } from "../../store/LanguageContext";
+import { ACCESS_TOKEN_KEY } from "../../services/api";
 
 export const SettingsPage: React.FC = () => {
   const { user } = useAuth();
   const { t, language } = useLanguage();
-  
+  const userToken = localStorage.getItem(ACCESS_TOKEN_KEY);
+
   // Profile state
-  const [name, setName] = useState(user?.name || '');
-  const [email, setEmail] = useState(user?.email || '');
-  const [role, setRole] = useState(user?.role || '');
+  const [name, setName] = useState(user?.name || "");
+  const [email, setEmail] = useState(user?.email || "");
+  const [role, setRole] = useState(user?.role || "");
 
   // Privacy toggles state
   const [localProcessing, setLocalProcessing] = useState(true);
@@ -21,19 +23,32 @@ export const SettingsPage: React.FC = () => {
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
-    alert(language === 'am' ? 'የምርምር መገለጫ ለውጦች ተቀምጠዋል!' : 'Saving user profile modifications!');
+    alert(
+      language === "am"
+        ? "የምርምር መገለጫ ለውጦች ተቀምጠዋል!"
+        : "Saving user profile modifications!",
+    );
   };
 
-  const handleExportData = (format: 'json' | 'csv') => {
-    alert(language === 'am' ? `${format.toUpperCase()} መዝገቦችን ወደ ውጭ በመላክ ላይ...` : `Exporting research logs as ${format.toUpperCase()}...`);
+  const handleExportData = (format: "json" | "csv") => {
+    alert(
+      language === "am"
+        ? `${format.toUpperCase()} መዝገቦችን ወደ ውጭ በመላክ ላይ...`
+        : `Exporting research logs as ${format.toUpperCase()}...`,
+    );
   };
 
   const handleDeleteData = () => {
-    const confirmMsg = language === 'am' 
-      ? 'ሁሉንም ያለፉ መዝገቦችን ማጥፋት እንደሚፈልጉ እርግጠኛ ነዎት? ይህ ድርጊት ሊቀለበስ አይችልም።' 
-      : 'Are you absolutely sure you want to delete all historical logs? This cannot be undone.';
+    const confirmMsg =
+      language === "am"
+        ? "ሁሉንም ያለፉ መዝገቦችን ማጥፋት እንደሚፈልጉ እርግጠኛ ነዎት? ይህ ድርጊት ሊቀለበስ አይችልም።"
+        : "Are you absolutely sure you want to delete all historical logs? This cannot be undone.";
     if (window.confirm(confirmMsg)) {
-      alert(language === 'am' ? 'የላብራቶሪ መዝገቦች ውሂብ ጎታዎች በመሰረዝ ላይ...' : 'Deleting lab logs databases...');
+      alert(
+        language === "am"
+          ? "የላብራቶሪ መዝገቦች ውሂብ ጎታዎች በመሰረዝ ላይ..."
+          : "Deleting lab logs databases...",
+      );
     }
   };
 
@@ -42,29 +57,35 @@ export const SettingsPage: React.FC = () => {
       {/* Page Header */}
       <div>
         <h2 className="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface dark:text-on-surface">
-          {t('settings')}
+          {t("settings")}
         </h2>
         <p className="font-body-lg text-body-lg text-on-surface-variant dark:text-on-surface-variant/80 mt-xs">
-          {t('settingsDesc')}
+          {t("settingsDesc")}
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
         {/* Profile Card */}
         <div className="lg:col-span-6">
-          <Card hoverable={false} accentColor="primary" className="h-full flex flex-col justify-between dark:bg-surface-container-lowest dark:border-outline-variant">
+          <Card
+            hoverable={false}
+            accentColor="primary"
+            className="h-full flex flex-col justify-between dark:bg-surface-container-lowest dark:border-outline-variant"
+          >
             <form onSubmit={handleSaveProfile} className="space-y-md">
-              <h3 className="font-headline-md text-headline-md text-on-surface dark:text-on-surface mb-md">{t('researcherProfile')}</h3>
-              
+              <h3 className="font-headline-md text-headline-md text-on-surface dark:text-on-surface mb-md">
+                {t("researcherProfile")}
+              </h3>
+
               <Input
-                label={t('fullName')}
+                label={t("fullName")}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 icon="person"
               />
 
               <Input
-                label={t('emailAddress')}
+                label={t("emailAddress")}
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -72,14 +93,22 @@ export const SettingsPage: React.FC = () => {
               />
 
               <Input
-                label={t('labRole')}
+                label={t("labRole")}
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
                 icon="work"
               />
 
+              <Input
+                label={t("userToken")}
+                value={userToken ?? ""}
+                onChange={(e) => setRole(e.target.value)}
+                icon="work"
+                disabled
+              />
+
               <div className="pt-md">
-                <Button type="submit">{t('saveChanges')}</Button>
+                <Button type="submit">{t("saveChanges")}</Button>
               </div>
             </form>
           </Card>
@@ -87,17 +116,25 @@ export const SettingsPage: React.FC = () => {
 
         {/* Privacy & Processing Card */}
         <div className="lg:col-span-6">
-          <Card hoverable={false} accentColor="secondary" className="h-full flex flex-col justify-between dark:bg-surface-container-lowest dark:border-outline-variant">
+          <Card
+            hoverable={false}
+            accentColor="secondary"
+            className="h-full flex flex-col justify-between dark:bg-surface-container-lowest dark:border-outline-variant"
+          >
             <div className="space-y-md">
-              <h3 className="font-headline-md text-headline-md text-on-surface dark:text-on-surface mb-md">{t('privacySettings')}</h3>
+              <h3 className="font-headline-md text-headline-md text-on-surface dark:text-on-surface mb-md">
+                {t("privacySettings")}
+              </h3>
 
               <div className="space-y-lg pt-sm">
                 {/* Toggle 1 */}
                 <div className="flex items-start justify-between">
                   <div className="mr-md">
-                    <p className="font-label-md text-label-md text-on-surface dark:text-on-surface font-bold">{t('localProcessing')}</p>
+                    <p className="font-label-md text-label-md text-on-surface dark:text-on-surface font-bold">
+                      {t("localProcessing")}
+                    </p>
                     <p className="font-body-sm text-body-sm text-on-surface-variant dark:text-on-surface-variant/80 mt-xs leading-relaxed">
-                      {t('localProcessingDesc')}
+                      {t("localProcessingDesc")}
                     </p>
                   </div>
                   <input
@@ -111,9 +148,11 @@ export const SettingsPage: React.FC = () => {
                 {/* Toggle 2 */}
                 <div className="flex items-start justify-between">
                   <div className="mr-md">
-                    <p className="font-label-md text-label-md text-on-surface dark:text-on-surface font-bold">{t('allowSemantic')}</p>
+                    <p className="font-label-md text-label-md text-on-surface dark:text-on-surface font-bold">
+                      {t("allowSemantic")}
+                    </p>
                     <p className="font-body-sm text-body-sm text-on-surface-variant dark:text-on-surface-variant/80 mt-xs leading-relaxed">
-                      {t('allowSemanticDesc')}
+                      {t("allowSemanticDesc")}
                     </p>
                   </div>
                   <input
@@ -127,9 +166,11 @@ export const SettingsPage: React.FC = () => {
                 {/* Toggle 3 */}
                 <div className="flex items-start justify-between">
                   <div className="mr-md">
-                    <p className="font-label-md text-label-md text-on-surface dark:text-on-surface font-bold">{t('continuousLogging')}</p>
+                    <p className="font-label-md text-label-md text-on-surface dark:text-on-surface font-bold">
+                      {t("continuousLogging")}
+                    </p>
                     <p className="font-body-sm text-body-sm text-on-surface-variant dark:text-on-surface-variant/80 mt-xs leading-relaxed">
-                      {t('continuousLoggingDesc')}
+                      {t("continuousLoggingDesc")}
                     </p>
                   </div>
                   <input
@@ -146,24 +187,47 @@ export const SettingsPage: React.FC = () => {
 
         {/* Data Export & Danger Zone */}
         <div className="lg:col-span-12">
-          <Card hoverable={false} className="p-lg dark:bg-surface-container-lowest dark:border-outline-variant">
-            <h3 className="font-headline-md text-headline-md text-on-surface dark:text-on-surface mb-md">{t('dataPortability')}</h3>
+          <Card
+            hoverable={false}
+            className="p-lg dark:bg-surface-container-lowest dark:border-outline-variant"
+          >
+            <h3 className="font-headline-md text-headline-md text-on-surface dark:text-on-surface mb-md">
+              {t("dataPortability")}
+            </h3>
             <p className="font-body-sm text-body-sm text-on-surface-variant dark:text-on-surface-variant/80 mb-lg max-w-2xl leading-relaxed">
-              {t('dataPortabilityDesc')}
+              {t("dataPortabilityDesc")}
             </p>
 
             <div className="flex flex-wrap gap-md">
-              <Button variant="secondary" onClick={() => handleExportData('csv')} className="flex items-center gap-sm">
-                <span className="material-symbols-outlined text-[18px]">download</span>
-                {t('exportCsvLogs')}
+              <Button
+                variant="secondary"
+                onClick={() => handleExportData("csv")}
+                className="flex items-center gap-sm"
+              >
+                <span className="material-symbols-outlined text-[18px]">
+                  download
+                </span>
+                {t("exportCsvLogs")}
               </Button>
-              <Button variant="secondary" onClick={() => handleExportData('json')} className="flex items-center gap-sm">
-                <span className="material-symbols-outlined text-[18px]">download</span>
-                {t('exportJsonLogs')}
+              <Button
+                variant="secondary"
+                onClick={() => handleExportData("json")}
+                className="flex items-center gap-sm"
+              >
+                <span className="material-symbols-outlined text-[18px]">
+                  download
+                </span>
+                {t("exportJsonLogs")}
               </Button>
-              <Button variant="danger" onClick={handleDeleteData} className="flex items-center gap-sm md:ml-auto">
-                <span className="material-symbols-outlined text-[18px]">delete_forever</span>
-                {t('purgeLogs')}
+              <Button
+                variant="danger"
+                onClick={handleDeleteData}
+                className="flex items-center gap-sm md:ml-auto"
+              >
+                <span className="material-symbols-outlined text-[18px]">
+                  delete_forever
+                </span>
+                {t("purgeLogs")}
               </Button>
             </div>
           </Card>
