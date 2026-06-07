@@ -105,6 +105,9 @@ export const SettingsPage: React.FC = () => {
                 onChange={(e) => setRole(e.target.value)}
                 icon="work"
                 disabled
+                style={{
+                  overflow: "auto",
+                }}
               />
 
               <div className="pt-md">
